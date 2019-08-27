@@ -98,4 +98,52 @@ Parameters:
 
 ---
 
+### Get Specific User
+
+Method used: **[GET]** `/api/users/:id`
+
+On Success: Returns an array with just the user specified.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Update User
+
+Method used: **[PUT]** `/api/users/:id`
+
+On Success: Returns `1`, or returns `0` if user could not be updated.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                                                                                |
+| -------------- | ---------- | -------- | ------------------------------------------------------------------------------------ |
+| Authorization  | **Header** | yes      | Acquired from a successful login. Will only update the user that has been logged in. |
+| firstName      | string     | no       | The user's first name.                                                               |
+| lastName       | string     | no       | The user's last name.                                                                |
+| username       | string     | no       | Must be unique.                                                                      |
+| password       | string     | no       | Can be any length, but the longer the better.                                        |
+| client         | boolean    | no       | Defaults to 0 (false) automatically.                                                 |
+| instructor     | boolean    | no       | Defaults to 0 (false) automatically.                                                 |
+
+---
+
+### Delete User
+
+Method used: **[DELETE]** `/api/users/:id`
+
+On Success: Returns `1`, or returns `0` if user could not be deleted.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                                                                                |
+| -------------- | ---------- | -------- | ------------------------------------------------------------------------------------ |
+| Authorization  | **Header** | yes      | Acquired from a successful login. Will only update the user that has been logged in. |
+
+---
+
 More coming soon!
