@@ -33,9 +33,79 @@ const generateToken = user => {
 const getUsers = () => {
     return db('users').select('id', 'username');
 };
+
+const restrictedByToken = (req, res, next) => {
+    const token = req.headers.authorization;
+    const { secret } = process.env;
+
+    if (token) {
+        jwt.verify(token, secret, (error, decodedToken) => {
+            if (error) {
+                res.status(401).json({
+                    message: `Invalid token!`
+                });
+            } else {
+                req.decodedToken = decodedToken;
+                next();
+            }
+        }); // end jwt.verify
+    } else {
+        res.status(401).json({
+            error: `No token found!`
+        });
+    }
+};
+
+const clientsOnly = (req, res, next) => {
+    const token = req.headers.authorization;
+    const { secret } = process.env;
+
+    if (token) {
+        jwt.verify(token, secret, (error, decodedToken) => {
+            if (decodedToken.client) {
+                req.decodedToken = decodedToken;
+                next();
+            } else {
+                res.status(401).json({
+                    message: `This user isn't authorized to take this action!`
+                });
+            }
+        }); // end jwt.verify
+    } else {
+        res.status(401).json({
+            error: `No token found!`
+        });
+    }
+};
+
+const instructorsOnly = (req, res, next) => {
+    const token = req.headers.authorization;
+    const { secret } = process.env;
+
+    if (token) {
+        jwt.verify(token, secret, (error, decodedToken) => {
+            if (decodedToken.instructor) {
+                req.decodedToken = decodedToken;
+                next();
+            } else {
+                res.status(401).json({
+                    message: `This user isn't authorized to take this action!`
+                });
+            }
+        }); // end jwt.verify
+    } else {
+        res.status(401).json({
+            error: `No token found!`
+        });
+    }
+};
+
 module.exports = {
     register,
     loginStart,
     generateToken,
-    getUsers
+    getUsers,
+    restrictedByToken,
+    clientsOnly,
+    instructorsOnly
 };
