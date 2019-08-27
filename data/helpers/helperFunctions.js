@@ -9,9 +9,9 @@ const register = user => {
     return db('users').insert(user);
 };
 
-const loginStart = credentials => {
+const loginStart = username => {
     return db('users')
-        .where({ username: credentials.username })
+        .where({ username })
         .first();
 };
 
@@ -20,7 +20,7 @@ const generateToken = user => {
 
     const payload = {
         userId: user.id,
-        firstName: foundUser.firstName
+        firstName: user.firstName
     };
 
     const options = {
@@ -29,8 +29,13 @@ const generateToken = user => {
 
     return jwt.sign(payload, secret, options);
 };
+
+const getUsers = () => {
+    return db('users').select('id', 'username');
+};
 module.exports = {
     register,
     loginStart,
-    generateToken
+    generateToken,
+    getUsers
 };
