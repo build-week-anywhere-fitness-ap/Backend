@@ -5,6 +5,8 @@ const helper = require('../../data/helpers/helperFunctions');
 
 const router = express.Router();
 
+const { restrictedByToken, restrictedById } = helper; // deconstructed middleware
+
 // -------------- Registration ------------- //
 router.post('/register/', async (req, res) => {
     const userInfo = req.body;
@@ -79,14 +81,61 @@ router.post('/login/', async (req, res) => {
     } // 'does username exists?' check
 });
 
-router.get('/users/', async (req, res) => {
+// --------------- Get Users --------------- //
+router.get('/users/', restrictedByToken, async (req, res) => {
     try {
         let users = await helper.getUsers();
 
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({
-            error: `Couldn't retrieve users at this time.`
+            error: `Couldn't retrieve any users at this time.`
+        });
+    }
+});
+
+// ------------ Get User By Id ------------- //
+router.get('/users/:id', restrictedByToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        let user = await helper.getUserById(id);
+        if (user.length > 0) {
+            res.status(200).json(user);
+        } else {
+            res.status(404).json({
+                error: `Couldn't find any users with this id.`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            error: `Couldn't retrieve any users at this time.`
+        });
+    }
+});
+
+// -------------- Update User -------------- //
+router.put('/users/:id', restrictedById, async (req, res) => {
+    const { id } = req.params;
+    const info = req.body;
+    try {
+        let updatedUser = await helper.updateUser(id, info);
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(404).json({
+            error: `Couldn't find any users with this id.`
+        });
+    }
+});
+
+// -------------- Delete User -------------- //
+router.delete('/users/:id', restrictedById, async (req, res) => {
+    const { id } = req.params;
+    try {
+        let deletedUser = await helper.deleteUser(id);
+        res.status(200).json(deletedUser);
+    } catch (error) {
+        res.status(404).json({
+            error: `Couldn't find any users with this id.`
         });
     }
 });
