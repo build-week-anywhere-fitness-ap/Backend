@@ -5,6 +5,8 @@ const helper = require('../../data/helpers/helperFunctions');
 
 const router = express.Router();
 
+const { restrictedByToken, clientsOnly, instructorsOnly } = helper; // deconstructed middleware
+
 // -------------- Registration ------------- //
 router.post('/register/', async (req, res) => {
     const userInfo = req.body;
@@ -79,7 +81,7 @@ router.post('/login/', async (req, res) => {
     } // 'does username exists?' check
 });
 
-router.get('/users/', async (req, res) => {
+router.get('/users/', restrictedByToken, async (req, res) => {
     try {
         let users = await helper.getUsers();
 
