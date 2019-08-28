@@ -54,6 +54,7 @@ const deleteUser = id => {
         .first()
         .del();
 };
+
 // --------------- Classes ----------------- //
 
 const getClasses = () => {
@@ -74,6 +75,12 @@ const getClassById = id => {
         .select('id', 'name', 'type', 'location', 'instructor_id', 'dateTime');
 };
 
+const getClassesByUser = id => {
+    return db('classes')
+        .where({ instructor_id: id })
+        .select('id', 'name', 'type', 'location', 'instructor_id', 'dateTime');
+};
+
 const addClass = classInfo => {
     return db('classes').insert(classInfo);
 };
@@ -91,6 +98,7 @@ const deleteClass = id => {
         .first()
         .del();
 };
+
 // --------------- Tokens ------------------ //
 
 const generateToken = user => {
@@ -209,6 +217,7 @@ module.exports = {
     deleteUser,
     getClasses,
     getClassById,
+    getClassesByUser,
     addClass,
     updateClass,
     deleteClass,
