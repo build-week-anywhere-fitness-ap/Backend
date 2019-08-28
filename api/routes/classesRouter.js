@@ -4,8 +4,8 @@ const helper = require('../../data/helpers/helperFunctions');
 
 const router = express.Router();
 
-const { restrictedByToken, restrictedById, instructorsOnly } = helper;
-const userRestriction = [restrictedByToken, instructorsOnly];
+const { restrictedByToken, restrictedById, instructorsOnly } = helper; // deconstructed middleware
+const userRestriction = [restrictedByToken, instructorsOnly]; // combines middleware
 
 // ------------ Get All Classes ------------ //
 
