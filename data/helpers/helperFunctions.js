@@ -99,6 +99,49 @@ const deleteClass = id => {
         .del();
 };
 
+// ---------------- Passes ----------------- //
+
+const getPasses = () => {
+    return db('passes').select(
+        'id',
+        'client_id',
+        'class_id',
+        'timesUsed',
+        'completed'
+    );
+};
+
+const getPassById = id => {
+    return db('passes')
+        .where({ id })
+        .first()
+        .select('id', 'client_id', 'class_id', 'timesUsed', 'completed');
+};
+
+const getPassesByClient = client_id => {
+    return db('passes')
+        .where({ client_id })
+        .select('id', 'client_id', 'class_id', 'timesUsed', 'completed');
+};
+
+const addPass = info => {
+    return db('passes').insert(info);
+};
+
+const updatePass = (id, info) => {
+    return db('passes')
+        .where({ id })
+        .first()
+        .update(info);
+};
+
+const deletePass = id => {
+    return db('passes')
+        .where({ id })
+        .first()
+        .del();
+};
+
 // --------------- Tokens ------------------ //
 
 const generateToken = user => {
@@ -221,6 +264,12 @@ module.exports = {
     addClass,
     updateClass,
     deleteClass,
+    getPasses,
+    getPassById,
+    getPassesByClient,
+    addPass,
+    updatePass,
+    deletePass,
     restrictedByToken,
     restrictedById,
     clientsOnly,
