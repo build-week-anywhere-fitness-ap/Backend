@@ -3,6 +3,7 @@ const express = require('express');
 const config = require('./config/middlewareConfig');
 const userRouter = require('./routes/userRouter');
 const classesRouter = require('./routes/classesRouter');
+const passesRouter = require('./routes/passesRouter');
 
 const server = express();
 
@@ -12,6 +13,7 @@ config(server);
 // ----------------- Routes ------------------ //
 server.use('/api', userRouter);
 server.use('/api', classesRouter);
+server.use('/api', passesRouter);
 
 // ---------------- Test Route --------------- //
 server.get('/', async (req, res) => {
