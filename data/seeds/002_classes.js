@@ -9,22 +9,19 @@ exports.seed = function(knex) {
                     name: 'Axe Practice',
                     type: 'High Intensity',
                     location: 'Garreg Mach Monastery',
-                    instructor_id: 4,
-                    dateTime: '2019-08-30 16:30:00'
+                    instructor_id: 4
                 },
                 {
                     name: 'Riding Practice',
                     type: 'High Intensity',
                     location: 'Garreg Mach Monastery',
-                    instructor_id: 4,
-                    dateTime: '2019-08-30 18:00:00'
+                    instructor_id: 4
                 },
                 {
                     name: 'Archery',
                     type: 'High Intensity',
                     location: 'Garreg Mach Monastery',
-                    instructor_id: 4,
-                    dateTime: '2019-08-31 16:30:00'
+                    instructor_id: 4
                 }
             ]);
         });
