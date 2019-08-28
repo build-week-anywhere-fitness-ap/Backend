@@ -6,7 +6,7 @@ const router = express.Router();
 
 const { restrictedByToken, restrictedById, instructorsOnly } = helper; // deconstructed middleware
 const userRestriction = [restrictedByToken, instructorsOnly]; // combines middleware
-const idRestriction = [restrictedById, instructorsOnly]; // combines middleware
+// const idRestriction = [restrictedById, instructorsOnly]; // combines middleware
 
 // ------------ Get All Classes ------------ //
 
@@ -50,7 +50,7 @@ router.post('/classes/', userRestriction, async (req, res) => {
 
 // -------------- Update Class ------------- //
 
-router.put('/classes/:id', idRestriction, async (req, res) => {
+router.put('/classes/:id', userRestriction, async (req, res) => {
     const { id } = req.params;
     const classInfo = req.body;
 
@@ -65,7 +65,7 @@ router.put('/classes/:id', idRestriction, async (req, res) => {
 
 // -------------- Delete Class ------------- //
 
-router.delete('/classes/:id', idRestriction, async (req, res) => {
+router.delete('/classes/:id', userRestriction, async (req, res) => {
     const { id } = req.params;
 
     try {
