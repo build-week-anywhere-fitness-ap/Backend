@@ -55,13 +55,59 @@ const deleteUser = id => {
         .del();
 };
 
-// ------------ Restrictions --------------- //
+// --------------- Classes ----------------- //
+
+const getClasses = () => {
+    return db('classes').select(
+        'id',
+        'name',
+        'type',
+        'location',
+        'instructor_id',
+        'dateTime'
+    );
+};
+
+const getClassById = id => {
+    return db('classes')
+        .where({ id })
+        .first()
+        .select('id', 'name', 'type', 'location', 'instructor_id', 'dateTime');
+};
+
+const getClassesByUser = id => {
+    return db('classes')
+        .where({ instructor_id: id })
+        .select('id', 'name', 'type', 'location', 'instructor_id', 'dateTime');
+};
+
+const addClass = classInfo => {
+    return db('classes').insert(classInfo);
+};
+
+const updateClass = (id, classInfo) => {
+    return db('classes')
+        .where({ id })
+        .first()
+        .update(classInfo);
+};
+
+const deleteClass = id => {
+    return db('classes')
+        .where({ id })
+        .first()
+        .del();
+};
+
+// --------------- Tokens ------------------ //
 
 const generateToken = user => {
     const { secret } = process.env;
 
     const payload = {
-        id: user.id
+        id: user.id,
+        instructor: user.instructor,
+        client: user.client
     };
 
     const options = {
@@ -70,6 +116,8 @@ const generateToken = user => {
 
     return jwt.sign(payload, secret, options);
 };
+
+// ------------ Restrictions --------------- //
 
 const restrictedByToken = (req, res, next) => {
     const token = req.headers.authorization;
@@ -167,6 +215,12 @@ module.exports = {
     getUserById,
     updateUser,
     deleteUser,
+    getClasses,
+    getClassById,
+    getClassesByUser,
+    addClass,
+    updateClass,
+    deleteClass,
     restrictedByToken,
     restrictedById,
     clientsOnly,

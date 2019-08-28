@@ -8,6 +8,7 @@ const router = express.Router();
 const { restrictedByToken, restrictedById } = helper; // deconstructed middleware
 
 // -------------- Registration ------------- //
+
 router.post('/register/', async (req, res) => {
     const userInfo = req.body;
 
@@ -41,6 +42,7 @@ router.post('/register/', async (req, res) => {
 });
 
 // ----------------- Login ----------------- //
+
 router.post('/login/', async (req, res) => {
     const { username, password } = req.body;
 
@@ -82,6 +84,7 @@ router.post('/login/', async (req, res) => {
 });
 
 // --------------- Get Users --------------- //
+
 router.get('/users/', restrictedByToken, async (req, res) => {
     try {
         let users = await helper.getUsers();
@@ -113,7 +116,28 @@ router.get('/users/:id', restrictedByToken, async (req, res) => {
     }
 });
 
+// ---------- Get Classes By User ---------- //
+
+router.get('/users/:id/classes/', restrictedByToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        let classes = await helper.getClassesByUser(id);
+        if (classes.length > 0) {
+            res.status(200).json(classes);
+        } else {
+            res.status(404).json({
+                error: `Couldn't find any classes for this user.`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            error: `Couldn't retrieve any classes at this time.`
+        });
+    }
+});
+
 // -------------- Update User -------------- //
+
 router.put('/users/:id', restrictedById, async (req, res) => {
     const { id } = req.params;
     const info = req.body;
@@ -128,6 +152,7 @@ router.put('/users/:id', restrictedById, async (req, res) => {
 });
 
 // -------------- Delete User -------------- //
+
 router.delete('/users/:id', restrictedById, async (req, res) => {
     const { id } = req.params;
     try {

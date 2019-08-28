@@ -142,7 +142,128 @@ Parameters:
 
 | Parameter Name | Type       | Required | Notes                                                                                |
 | -------------- | ---------- | -------- | ------------------------------------------------------------------------------------ |
-| Authorization  | **Header** | yes      | Acquired from a successful login. Will only update the user that has been logged in. |
+| Authorization  | **Header** | yes      | Acquired from a successful login. Will only delete the user that has been logged in. |
+
+---
+
+### Classes Overview
+
+| Method | Endpoint            | Requires                                                          | Description                                    |
+| ------ | ------------------- | ----------------------------------------------------------------- | ---------------------------------------------- |
+| POST   | `/api/classes/`     | Successful Login, `name`, `location`, `instructor_id`, `dateTime` | Used to add a new class to the database.       |
+| GET    | `/api/classes/`     | Successful Login                                                  | Used to show all classes in the database.      |
+| GET    | `/api/classes/:id/` | Successful Login                                                  | Used to show a specific class in the database. |
+| PUT    | `/api/classes/:id/` | Successful Login                                                  | Used to edit a specific class.                 |
+| DELETE | `/api/classes/:id/` | Successful Login                                                  | Used to delete a specific class.               |
+
+---
+
+### Add Class
+
+Method used: **[POST]** `/api/classes/`
+
+On Success: Returns the Id of the new class.
+
+Parameters:
+
+| Parameter Name | Type               | Required                          | Notes                                                                |
+| -------------- | ------------------ | --------------------------------- | -------------------------------------------------------------------- |
+| Authorization  | **Header**         | Acquired from a successful login. |
+| Instructor     | Key in User Object | yes                               | User must have the `Instructor` parameter set to *true* in database. |
+| name           | string             | yes                               | The name of the class.                                               |
+| type           | string             | no                                | The class's type. Examples: High Intensity, Yoga                     |
+| location       | string             | yes                               | The place where the class takes place.                               |
+| instructor_id  | integer            | yes                               | The `id` of the user who instructs this class.                       |
+| dateTime       | datetime           | yes                               | The date and time the class takes place.                             |
+
+Example of what to use:
+
+```
+{
+    name: "Cardio Kickboxing",
+    type: "cardio",
+    location: "123 Main St",
+    instructor_id: 1,
+    dateTime: "2019-08-30 18:00:00"
+}
+```
+
+---
+
+### Get Classes
+
+Method used: **[GET]** `/api/classes/`
+
+On Success: Returns an array of classes.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Get Specific Class
+
+Method used: **[GET]** `/api/classes/:id`
+
+On Success: Returns an array with just the class specified.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Get Classes By User Id
+
+Method used: **[GET]** `/api/users/:id/classes/`
+
+On Success: Returns an array with just the classes belonging to the specified user.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Update Class
+
+Method used: **[PUT]** `/api/classes/:id`
+
+On Success: Returns `1`, or returns `0` if class could not be updated.
+
+Parameters:
+
+| Parameter Name | Type               | Required | Notes                                                                                                 |
+| -------------- | ------------------ | -------- | ----------------------------------------------------------------------------------------------------- |
+| Authorization  | **Header**         | yes      | Acquired from a successful login. Will only update the class belonging to the user that is logged in. |
+| Instructor     | Key in User Object | yes      | User must have the `Instructor` parameter set to *true* in database.                                  |
+| name           | string             | yes      | The name of the class.                                                                                |
+| type           | string             | no       | The class's type. Examples: High Intensity, Yoga                                                      |
+| location       | string             | no       | The place where the class takes place.                                                                |
+| instructor_id  | integer            | no       | The `id` of the user who instructs this class.                                                        |
+| dateTime       | datetime           | no       | The date and time the class takes place.                                                              |
+
+---
+
+### Delete Class
+
+Method used: **[DELETE]** `/api/classes/:id`
+
+On Success: Returns `1`, or returns `0` if class could not be deleted.
+
+Parameters:
+
+| Parameter Name | Type               | Required | Notes                                                                                                 |
+| -------------- | ------------------ | -------- | ----------------------------------------------------------------------------------------------------- |
+| Authorization  | **Header**         | yes      | Acquired from a successful login. Will only delete the class belonging to the user that is logged in. |
+| Instructor     | Key in User Object | yes      | User must have the `Instructor` parameter set to *true* in database.                                  |
 
 ---
 
