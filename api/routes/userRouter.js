@@ -136,6 +136,27 @@ router.get('/users/:id/classes/', restrictedByToken, async (req, res) => {
     }
 });
 
+// ----------- Get Passes By User ---------- //
+
+router.get('/users/:id/passes/', restrictedByToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        let passes = await helper.getPassesByClient(id);
+
+        if (passes.length > 0) {
+            res.status(200).json(passes);
+        } else {
+            res.status(404).json({
+                error: `Couldn't find any passes for this user.`
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            error: `Couldn't retrieve any passes at this time.`
+        });
+    }
+});
+
 // -------------- Update User -------------- //
 
 router.put('/users/:id', restrictedById, async (req, res) => {
