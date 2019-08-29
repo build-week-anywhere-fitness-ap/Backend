@@ -1,10 +1,8 @@
 exports.seed = function(knex) {
     // Deletes ALL existing entries
-    knex.raw('SET foreign_key_checks = 0');
     return knex('classes')
-        .truncate()
+        .del()
         .then(function() {
-            knex.raw('SET foreign_key_checks = 1');
             return knex('classes').insert([
                 {
                     name: 'Axe Practice',
