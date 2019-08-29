@@ -9,7 +9,9 @@ const db = knex(knexConfig[dbEnv]);
 // ----------------- Users ----------------- //
 
 const register = user => {
-    return db('users').insert(user);
+    return db('users')
+        .insert(user)
+        .returning('id');
 };
 
 const loginStart = username => {
@@ -105,7 +107,9 @@ const getClassesByUser = id => {
 };
 
 const addClass = classInfo => {
-    return db('classes').insert(classInfo);
+    return db('classes')
+        .insert(classInfo)
+        .returning('id');
 };
 
 const updateClass = (id, classInfo) => {
@@ -148,7 +152,9 @@ const getPassesByClient = client_id => {
 };
 
 const addPass = info => {
-    return db('passes').insert(info);
+    return db('passes')
+        .insert(info)
+        .returning('id');
 };
 
 const updatePass = (id, info) => {
@@ -185,7 +191,9 @@ const getSessionsByClass = class_id => {
 };
 
 const addSession = info => {
-    return db('sessions').insert(info);
+    return db('sessions')
+        .insert(info)
+        .returning('id');
 };
 
 const updateSession = (id, sessionInfo) => {
