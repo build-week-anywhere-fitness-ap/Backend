@@ -2,30 +2,58 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const knex = require('knex');
 const knexConfig = require('../../knexfile');
+const dbEnv = process.env.dbConfig || 'development';
 
-const db = knex(knexConfig.development);
+const db = knex(knexConfig[dbEnv]);
 
-// ----------------- Users ----------------- //
+// ---------------- General ---------------- //
 
-const register = user => {
-    return db('users').insert(user);
+const getFromDatabase = tableToUse => {
+    if (tableToUse === 'users') {
+        return db('users').select(
+            'id',
+            'username',
+            'firstName',
+            'lastName',
+            'client',
+            'instructor'
+        );
+    } else {
+        return db(tableToUse).select();
+    }
 };
+
+const getFromDbById = (tableToUse, id) => {
+    return db(tableToUse)
+        .where({ id })
+        .select();
+};
+
+const addToDatabase = (tableToUse, item) => {
+    return db(tableToUse)
+        .insert(item)
+        .returning('id');
+};
+
+const updateDatabase = (tableToUse, id, itemInfo) => {
+    return db(tableToUse)
+        .where({ id })
+        .first()
+        .update(itemInfo);
+};
+
+const deleteFromDatabase = (tableToUse, id) => {
+    return db(tableToUse)
+        .where({ id })
+        .first()
+        .del();
+};
+// ----------------- Users ----------------- //
 
 const loginStart = username => {
     return db('users')
         .where({ username })
         .first();
-};
-
-const getUsers = () => {
-    return db('users').select(
-        'id',
-        'username',
-        'firstName',
-        'lastName',
-        'client',
-        'instructor'
-    );
 };
 
 const getUserById = async id => {
@@ -57,31 +85,7 @@ const getUserById = async id => {
     };
 };
 
-const updateUser = (id, data) => {
-    return db('users')
-        .where({ id })
-        .first()
-        .update(data);
-};
-
-const deleteUser = id => {
-    return db('users')
-        .where({ id })
-        .first()
-        .del();
-};
-
 // --------------- Classes ----------------- //
-
-const getClasses = () => {
-    return db('classes').select(
-        'id',
-        'name',
-        'type',
-        'location',
-        'instructor_id'
-    );
-};
 
 const getClassById = async id => {
     const foundClass = db('classes')
@@ -103,42 +107,7 @@ const getClassesByUser = id => {
         .select('id', 'name', 'type', 'location', 'instructor_id');
 };
 
-const addClass = classInfo => {
-    return db('classes').insert(classInfo);
-};
-
-const updateClass = (id, classInfo) => {
-    return db('classes')
-        .where({ id })
-        .first()
-        .update(classInfo);
-};
-
-const deleteClass = id => {
-    return db('classes')
-        .where({ id })
-        .first()
-        .del();
-};
-
 // ---------------- Passes ----------------- //
-
-const getPasses = () => {
-    return db('passes').select(
-        'id',
-        'client_id',
-        'class_id',
-        'timesUsed',
-        'completed'
-    );
-};
-
-const getPassById = id => {
-    return db('passes')
-        .where({ id })
-        .first()
-        .select('id', 'client_id', 'class_id', 'timesUsed', 'completed');
-};
 
 const getPassesByClient = client_id => {
     return db('passes')
@@ -146,36 +115,7 @@ const getPassesByClient = client_id => {
         .select('id', 'client_id', 'class_id', 'timesUsed', 'completed');
 };
 
-const addPass = info => {
-    return db('passes').insert(info);
-};
-
-const updatePass = (id, info) => {
-    return db('passes')
-        .where({ id })
-        .first()
-        .update(info);
-};
-
-const deletePass = id => {
-    return db('passes')
-        .where({ id })
-        .first()
-        .del();
-};
-
 // -------------- Sessions ----------------- //
-
-const getSessions = () => {
-    return db('sessions').select('id', 'class_id', 'dateTime');
-};
-
-const getSessionById = id => {
-    return db('sessions')
-        .where({ id })
-        .first()
-        .select('id', 'class_id', 'dateTime');
-};
 
 const getSessionsByClass = class_id => {
     return db('sessions')
@@ -183,23 +123,6 @@ const getSessionsByClass = class_id => {
         .select('id', 'class_id', 'dateTime');
 };
 
-const addSession = info => {
-    return db('sessions').insert(info);
-};
-
-const updateSession = (id, sessionInfo) => {
-    return db('sessions')
-        .where({ id })
-        .first()
-        .update(sessionInfo);
-};
-
-const deleteSession = id => {
-    return db('sessions')
-        .where({ id })
-        .first()
-        .del();
-};
 // --------------- Tokens ------------------ //
 
 const generateToken = user => {
@@ -309,31 +232,18 @@ const instructorsOnly = (req, res, next) => {
 };
 
 module.exports = {
-    register,
+    getFromDatabase,
+    getFromDbById,
+    addToDatabase,
+    updateDatabase,
+    deleteFromDatabase,
     loginStart,
     generateToken,
-    getUsers,
     getUserById,
-    updateUser,
-    deleteUser,
-    getClasses,
     getClassById,
     getClassesByUser,
-    addClass,
-    updateClass,
-    deleteClass,
-    getPasses,
-    getPassById,
     getPassesByClient,
-    addPass,
-    updatePass,
-    deletePass,
-    getSessions,
-    getSessionById,
     getSessionsByClass,
-    addSession,
-    updateSession,
-    deleteSession,
     restrictedByToken,
     restrictedById,
     clientsOnly,

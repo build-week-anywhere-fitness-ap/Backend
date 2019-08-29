@@ -11,7 +11,7 @@ const userRestriction = [restrictedByToken, instructorsOnly];
 
 router.get('/sessions/', restrictedByToken, async (req, res) => {
     try {
-        let sessions = await helper.getSessions();
+        let sessions = await helper.getFromDatabase('sessions');
 
         res.status(200).json(sessions);
     } catch (error) {
@@ -24,7 +24,7 @@ router.get('/sessions/', restrictedByToken, async (req, res) => {
 router.get('/sessions/:id', restrictedByToken, async (req, res) => {
     const { id } = req.params;
     try {
-        let foundSession = await helper.getSessionById(id);
+        let foundSession = await helper.getFromDbById('sessions', id);
 
         res.status(200).json(foundSession);
     } catch (error) {
@@ -38,7 +38,7 @@ router.post('/sessions/', userRestriction, async (req, res) => {
     const sessionInfo = req.body;
 
     try {
-        let newSession = await helper.addSession(sessionInfo);
+        let newSession = await helper.addToDatabase('sessions', sessionInfo);
 
         res.status(201).json(newSession);
     } catch (error) {
@@ -53,7 +53,11 @@ router.put('/sessions/:id', userRestriction, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let updatedSession = await helper.updateSession(id, sessionInfo);
+        let updatedSession = await helper.updateDatabase(
+            'sessions',
+            id,
+            sessionInfo
+        );
 
         res.status(200).json(updatedSession);
     } catch (error) {
@@ -67,7 +71,7 @@ router.delete('/sessions/:id', userRestriction, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let deletedSession = await helper.deleteSession(id);
+        let deletedSession = await helper.deleteFromDatabase('sessions', id);
 
         res.status(200).json(deletedSession);
     } catch (error) {

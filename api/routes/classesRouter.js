@@ -6,13 +6,12 @@ const router = express.Router();
 
 const { restrictedByToken, restrictedById, instructorsOnly } = helper; // deconstructed middleware
 const userRestriction = [restrictedByToken, instructorsOnly]; // combines middleware
-// const idRestriction = [restrictedById, instructorsOnly]; // combines middleware
 
 // ------------ Get All Classes ------------ //
 
 router.get('/classes/', restrictedByToken, async (req, res) => {
     try {
-        let classes = await helper.getClasses();
+        let classes = await helper.getFromDatabase('classes');
 
         res.status(200).json(classes);
     } catch (error) {
@@ -54,7 +53,7 @@ router.post('/classes/', userRestriction, async (req, res) => {
     const classInfo = req.body;
 
     try {
-        let newClass = await helper.addClass(classInfo);
+        let newClass = await helper.addToDatabase('classes', classInfo);
 
         res.status(201).json(newClass);
     } catch (error) {
@@ -69,7 +68,11 @@ router.put('/classes/:id', userRestriction, async (req, res) => {
     const classInfo = req.body;
 
     try {
-        let updatedClass = await helper.updateClass(id, classInfo);
+        let updatedClass = await helper.updateDatabase(
+            'classes',
+            id,
+            classInfo
+        );
 
         res.status(200).json(updatedClass);
     } catch (error) {
@@ -83,7 +86,7 @@ router.delete('/classes/:id', userRestriction, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let deletedClass = await helper.deleteClass(id);
+        let deletedClass = await helper.deleteFromDatabase('classes', id);
 
         res.status(200).json(deletedClass);
     } catch (error) {
