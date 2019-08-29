@@ -2,8 +2,9 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const knex = require('knex');
 const knexConfig = require('../../knexfile');
+const dbEnv = process.env.dbConfig || 'development';
 
-const db = knex(knexConfig.development);
+const db = knex(knexConfig[dbEnv]);
 
 // ----------------- Users ----------------- //
 
