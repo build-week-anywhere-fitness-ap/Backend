@@ -1,3 +1,10 @@
+const localPg = {
+    host: 'localhost',
+    database: 'notinuse',
+    user: 'notinuse',
+    password: 'notinuse'
+};
+const productionPg = process.env.DATABASE_URL || localPg;
 // Update with your config settings.
 
 module.exports = {
@@ -13,5 +20,15 @@ module.exports = {
             directory: './data/seeds'
         },
         useNullAsDefault: true
+    },
+    production: {
+        client: 'pg',
+        connection: productionPg,
+        migrations: {
+            directory: './data/migrations'
+        },
+        seeds: {
+            directory: './data/seeds'
+        }
     }
 };
