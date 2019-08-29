@@ -102,7 +102,8 @@ router.get('/users/:id', restrictedByToken, async (req, res) => {
     const { id } = req.params;
     try {
         let user = await helper.getUserById(id);
-        if (user.length > 0) {
+
+        if (Object.keys(user).length > 0) {
             res.status(200).json(user);
         } else {
             res.status(404).json({

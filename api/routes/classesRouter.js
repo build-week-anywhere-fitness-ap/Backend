@@ -26,7 +26,7 @@ router.get('/classes/:id', restrictedByToken, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let foundClass = helper.getClassById(id);
+        let foundClass = await helper.getClassById(id);
 
         res.status(200).json(foundClass);
     } catch (error) {
