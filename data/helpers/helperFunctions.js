@@ -142,6 +142,42 @@ const deletePass = id => {
         .del();
 };
 
+// -------------- Sessions ----------------- //
+
+const getSessions = () => {
+    return db('sessions').select('id', 'class_id', 'dateTime');
+};
+
+const getSessionById = id => {
+    return db('sessions')
+        .where({ id })
+        .first()
+        .select('id', 'class_id', 'dateTime');
+};
+
+const getSessionsByClass = class_id => {
+    return db('sessions')
+        .where({ class_id })
+        .select('id', 'class_id', 'dateTime');
+};
+
+const addSession = info => {
+    return db('sessions').insert(info);
+};
+
+const updateSession = (id, sessionInfo) => {
+    return db('sessions')
+        .where({ id })
+        .first()
+        .update(sessionInfo);
+};
+
+const deleteSession = id => {
+    return db('sessions')
+        .where({ id })
+        .first()
+        .del();
+};
 // --------------- Tokens ------------------ //
 
 const generateToken = user => {
@@ -270,6 +306,12 @@ module.exports = {
     addPass,
     updatePass,
     deletePass,
+    getSessions,
+    getSessionById,
+    getSessionsByClass,
+    addSession,
+    updateSession,
+    deleteSession,
     restrictedByToken,
     restrictedById,
     clientsOnly,
