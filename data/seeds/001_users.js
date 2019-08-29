@@ -6,9 +6,11 @@ const { testUser1, testUser2, testUser3, testUser4 } = process.env;
 
 exports.seed = function(knex, Promise) {
     // Resets ALL existing entries
+    knex.raw('SET foreign_key_checks = 0');
     return knex('users')
         .truncate()
         .then(function() {
+            knex.raw('SET foreign_key_checks = 1');
             // Inserts seed entries
             return knex('users').insert([
                 {
