@@ -34,6 +34,20 @@ router.get('/classes/:id', restrictedByToken, async (req, res) => {
     }
 });
 
+// --------- Get Sessions by Class --------- //
+
+router.get('/classes/:id/sessions/', restrictedByToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        let sessions = await helper.getSessionsByClass(id);
+
+        res.status(200).json(sessions);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 // --------------- Add Class --------------- //
 
 router.post('/classes/', userRestriction, async (req, res) => {
