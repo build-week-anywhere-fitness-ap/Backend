@@ -26,11 +26,25 @@ router.get('/classes/:id', restrictedByToken, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let foundClass = helper.getClassById(id);
+        let foundClass = await helper.getClassById(id);
 
         res.status(200).json(foundClass);
     } catch (error) {
         res.status(404).send(error);
+    }
+});
+
+// --------- Get Sessions by Class --------- //
+
+router.get('/classes/:id/sessions/', restrictedByToken, async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        let sessions = await helper.getSessionsByClass(id);
+
+        res.status(200).json(sessions);
+    } catch (error) {
+        res.status(500).send(error);
     }
 });
 

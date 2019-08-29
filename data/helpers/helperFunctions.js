@@ -28,8 +28,8 @@ const getUsers = () => {
     );
 };
 
-const getUserById = id => {
-    return db('users')
+const getUserById = async id => {
+    const user = db('users')
         .where({ id })
         .select(
             'id',
@@ -39,6 +39,22 @@ const getUserById = id => {
             'client',
             'instructor'
         );
+
+    const classes = db('classes')
+        .where({ instructor_id: id })
+        .select('id', 'name', 'type', 'location');
+
+    const passes = db('passes')
+        .where({ client_id: id })
+        .select('id', 'class_id', 'timesUsed', 'completed');
+
+    let result = await Promise.all([user, classes, passes]);
+
+    return {
+        ...result[0][0],
+        classes: result[1],
+        passes: result[2]
+    };
 };
 
 const updateUser = (id, data) => {
@@ -63,22 +79,28 @@ const getClasses = () => {
         'name',
         'type',
         'location',
-        'instructor_id',
-        'dateTime'
+        'instructor_id'
     );
 };
 
-const getClassById = id => {
-    return db('classes')
+const getClassById = async id => {
+    const foundClass = db('classes')
         .where({ id })
-        .first()
-        .select('id', 'name', 'type', 'location', 'instructor_id', 'dateTime');
+        .first();
+
+    const sessions = db('sessions')
+        .where({ class_id: id })
+        .select('id', 'dateTime');
+
+    let result = await Promise.all([foundClass, sessions]);
+
+    return { ...result[0], sessions: result[1] };
 };
 
 const getClassesByUser = id => {
     return db('classes')
         .where({ instructor_id: id })
-        .select('id', 'name', 'type', 'location', 'instructor_id', 'dateTime');
+        .select('id', 'name', 'type', 'location', 'instructor_id');
 };
 
 const addClass = classInfo => {
@@ -142,6 +164,42 @@ const deletePass = id => {
         .del();
 };
 
+// -------------- Sessions ----------------- //
+
+const getSessions = () => {
+    return db('sessions').select('id', 'class_id', 'dateTime');
+};
+
+const getSessionById = id => {
+    return db('sessions')
+        .where({ id })
+        .first()
+        .select('id', 'class_id', 'dateTime');
+};
+
+const getSessionsByClass = class_id => {
+    return db('sessions')
+        .where({ class_id })
+        .select('id', 'class_id', 'dateTime');
+};
+
+const addSession = info => {
+    return db('sessions').insert(info);
+};
+
+const updateSession = (id, sessionInfo) => {
+    return db('sessions')
+        .where({ id })
+        .first()
+        .update(sessionInfo);
+};
+
+const deleteSession = id => {
+    return db('sessions')
+        .where({ id })
+        .first()
+        .del();
+};
 // --------------- Tokens ------------------ //
 
 const generateToken = user => {
@@ -270,6 +328,12 @@ module.exports = {
     addPass,
     updatePass,
     deletePass,
+    getSessions,
+    getSessionById,
+    getSessionsByClass,
+    addSession,
+    updateSession,
+    deleteSession,
     restrictedByToken,
     restrictedById,
     clientsOnly,

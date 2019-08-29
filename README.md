@@ -19,7 +19,7 @@ https://bw-anywhere-fitness.herokuapp.com/
 
 ## Endpoints
 
-Quick Links: [Users Overview](#users-overview) | [Classes Overview](#classes-overview) | [Passes Overview](#passes-overview)
+Quick Links: [Users Overview](#users-overview) | [Classes Overview](#classes-overview) | [Passes Overview](#passes-overview) | [Sessions Overview](#sessions-overview)
 
 ### Users Overview
 
@@ -179,7 +179,6 @@ Parameters:
 | type           | string             | no                                | The class's type. Examples: High Intensity, Yoga                     |
 | location       | string             | yes                               | The place where the class takes place.                               |
 | instructor_id  | integer            | yes                               | The `id` of the user who instructs this class.                       |
-| dateTime       | datetime           | yes                               | The date and time the class takes place.                             |
 
 Example of what to use:
 
@@ -189,7 +188,6 @@ Example of what to use:
     type: "cardio",
     location: "123 Main St",
     instructor_id: 1,
-    dateTime: "2019-08-30 18:00:00"
 }
 ```
 
@@ -249,11 +247,10 @@ Parameters:
 | -------------- | ------------------ | -------- | -------------------------------------------------------------------- |
 | Authorization  | **Header**         | yes      | Acquired from a successful login.                                    |
 | Instructor     | Key in User Object | yes      | User must have the `Instructor` parameter set to *true* in database. |
-| name           | string             | yes      | The name of the class.                                               |
+| name           | string             | no       | The name of the class.                                               |
 | type           | string             | no       | The class's type. Examples: High Intensity, Yoga                     |
 | location       | string             | no       | The place where the class takes place.                               |
 | instructor_id  | integer            | no       | The `id` of the user who instructs this class.                       |
-| dateTime       | datetime           | no       | The date and time the class takes place.                             |
 
 ---
 
@@ -371,15 +368,14 @@ Parameters:
 | -------------- | ------------------ | -------- | ---------------------------------------------------------------- |
 | Authorization  | **Header**         | yes      | Acquired from a successful login.                                |
 | Client         | Key in User Object | yes      | User must have the `Client` parameter set to *true* in database. |
-| name           | string             | yes      | The name of the class.                                           |
-| type           | string             | no       | The class's type. Examples: High Intensity, Yoga                 |
-| location       | string             | no       | The place where the class takes place.                           |
-| instructor_id  | integer            | no       | The `id` of the user who instructs this class.                   |
-| dateTime       | datetime           | no       | The date and time the class takes place.                         |
+| client_id      | integer            | no       | The `id` of the user who bought the pass.                        |
+| class_id       | integer            | no       | The `id` of the class the pass belongs to.                       |
+| timesUsed      | integer            | no       | The number of times the pass has been used. Defaults to 0.       |
+| completed      | boolean            | no       | Should be set to *true* when `timesUsed` reaches 10.             |
 
 ---
 
-### Delete Class
+### Delete Pass
 
 Method used: **[DELETE]** `/api/passes/:id`
 
@@ -392,8 +388,120 @@ Parameters:
 | Authorization  | **Header**         | yes      | Acquired from a successful login.                                |
 | Client         | Key in User Object | yes      | User must have the `Client` parameter set to *true* in database. |
 |                |
+
 [Top](#endpoints)
 
 ---
 
-More coming soon!
+### Sessions Overview
+
+| Method | Endpoint                                      | Requires                                                            | Description                                      |
+| ------ | --------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ |
+| POST   | `/api/sessions/`                              | Successful Login with **Instructor status**, `class_id`, `dateTime` | Used to add a new session to the database.       |
+| GET    | `/api/sessions/`                              | Successful Login                                                    | Used to show all sessions in the database.       |
+| GET    | `/api/sessions/:id/`                          | Successful Login                                                    | Used to show a specific session in the database. |
+| GET    | `/api/classes/:id/sessions/` Successful Login | Used to show all sessions belonging to a specific class.            |
+| PUT    | `/api/sessions/:id/`                          | Successful Login with **Instructor status**                         | Used to edit a specific session.                 |
+| DELETE | `/api/sessions/:id/`                          | Successful Login with **Instructor status**                         | Used to delete a specific session.               |
+
+---
+
+### Add Session
+
+Method used: **[POST]** `/api/sessions/`
+
+On Success: Returns the Id of the new session.
+
+Parameters:
+
+| Parameter Name | Type               | Required | Notes                                                                |
+| -------------- | ------------------ | -------- | -------------------------------------------------------------------- |
+| Authorization  | **Header**         | yes      | Acquired from a successful login.                                    |
+| Instructor     | Key in User Object | yes      | User must have the `Instructor` parameter set to *true* in database. |
+| class_id       | integer            | yes      | The `id` of the class group that this session is associated with.    |
+| dateTime       | datetime           | yes      | The time and date the session takes place.                           |
+
+Example of what to use:
+
+```
+{
+    class_id: 1,
+    dateTime: "2019-08-30 18:00:00"
+}
+```
+
+---
+
+### Get Sessions
+
+Method used: **[GET]** `/api/sessions/`
+
+On Success: Returns an array of sessions.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Get Specific Session
+
+Method used: **[GET]** `/api/sessions/:id`
+
+On Success: Returns an array with just the session specified.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Get Sessions By Class Id
+
+Method used: **[GET]** `/api/classes/:id/sessions/`
+
+On Success: Returns an array with just the sessions belonging to the specified class.
+
+Parameters:
+
+| Parameter Name | Type       | Required | Notes                             |
+| -------------- | ---------- | -------- | --------------------------------- |
+| Authorization  | **Header** | yes      | Acquired from a successful login. |
+
+---
+
+### Update Session
+
+Method used: **[PUT]** `/api/session/:id`
+
+On Success: Returns `1`, or returns `0` if session could not be updated.
+
+Parameters:
+
+| Parameter Name | Type               | Required | Notes                                                                |
+| -------------- | ------------------ | -------- | -------------------------------------------------------------------- |
+| Authorization  | **Header**         | yes      | Acquired from a successful login.                                    |
+| Instructor     | Key in User Object | yes      | User must have the `Instructor` parameter set to *true* in database. |
+| class_id       | integer            | no       | The `id` of the class group that this session is associated with.    |
+| dateTime       | datetime           | no       | The time and date the session takes place.                           |
+
+---
+
+### Delete Session
+
+Method used: **[DELETE]** `/api/session/:id`
+
+On Success: Returns `1`, or returns `0` if session could not be deleted.
+
+Parameters:
+
+| Parameter Name | Type               | Required | Notes                                                                |
+| -------------- | ------------------ | -------- | -------------------------------------------------------------------- |
+| Authorization  | **Header**         | yes      | Acquired from a successful login.                                    |
+| Instructor     | Key in User Object | yes      | User must have the `Instructor` parameter set to *true* in database. |
+
+[Top](#endpoints)

@@ -4,6 +4,7 @@ const config = require('./config/middlewareConfig');
 const userRouter = require('./routes/userRouter');
 const classesRouter = require('./routes/classesRouter');
 const passesRouter = require('./routes/passesRouter');
+const sessionsRouter = require('./routes/sessionsRouter');
 
 const server = express();
 
@@ -14,6 +15,7 @@ config(server);
 server.use('/api', userRouter);
 server.use('/api', classesRouter);
 server.use('/api', passesRouter);
+server.use('/api', sessionsRouter);
 
 // ---------------- Test Route --------------- //
 server.get('/', async (req, res) => {
