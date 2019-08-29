@@ -11,7 +11,7 @@ const userRestriction = [restrictedByToken, clientsOnly]; // combines middleware
 
 router.get('/passes/', restrictedByToken, async (req, res) => {
     try {
-        let passes = await helper.getPasses();
+        let passes = await helper.getFromDatabase('passes');
 
         res.status(200).json(passes);
     } catch (error) {
@@ -25,7 +25,7 @@ router.get('/passes/:id', restrictedByToken, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let foundPass = await helper.getPassById(id);
+        let foundPass = await helper.getFromDbById('passes', id);
 
         res.status(200).json(foundPass);
     } catch (error) {
@@ -39,7 +39,7 @@ router.post('/passes/', userRestriction, async (req, res) => {
     const passInfo = req.body;
 
     try {
-        let newPass = await helper.addPass(passInfo);
+        let newPass = await helper.addToDatabase('passes', passInfo);
 
         res.status(201).json(newPass);
     } catch (error) {
@@ -54,7 +54,7 @@ router.put('/passes/:id', userRestriction, async (req, res) => {
     const passInfo = req.body;
 
     try {
-        let updatedPass = await helper.updatePass(id, passInfo);
+        let updatedPass = await helper.updateDatabase('passes', id, passInfo);
 
         res.status(200).json(updatedPass);
     } catch (error) {
@@ -68,7 +68,7 @@ router.delete('/passes/:id', userRestriction, async (req, res) => {
     const { id } = req.params;
 
     try {
-        let deletedPass = await helper.deletePass(id);
+        let deletedPass = await helper.deleteFromDatabase('passes', id);
 
         res.status(200).json(deletedPass);
     } catch (error) {

@@ -17,7 +17,7 @@ router.post('/register/', async (req, res) => {
             if (userInfo.firstName && userInfo.lastName) {
                 userInfo.password = bcrypt.hashSync(userInfo.password, 16);
                 try {
-                    const id = await helper.register(userInfo);
+                    const id = await helper.addToDatabase('users', userInfo);
                     res.status(201).json(id);
                 } catch (err) {
                     res.status(403).json({
@@ -87,7 +87,7 @@ router.post('/login/', async (req, res) => {
 
 router.get('/users/', restrictedByToken, async (req, res) => {
     try {
-        let users = await helper.getUsers();
+        let users = await helper.getFromDatabase('users');
 
         res.status(200).json(users);
     } catch (error) {
@@ -164,7 +164,7 @@ router.put('/users/:id', restrictedById, async (req, res) => {
     const { id } = req.params;
     const info = req.body;
     try {
-        let updatedUser = await helper.updateUser(id, info);
+        let updatedUser = await helper.updateDatabase('users', id, info);
         res.status(200).json(updatedUser);
     } catch (error) {
         res.status(404).json({
@@ -178,7 +178,7 @@ router.put('/users/:id', restrictedById, async (req, res) => {
 router.delete('/users/:id', restrictedById, async (req, res) => {
     const { id } = req.params;
     try {
-        let deletedUser = await helper.deleteUser(id);
+        let deletedUser = await helper.deleteFromDatabase('users', id);
         res.status(200).json(deletedUser);
     } catch (error) {
         res.status(404).json({
