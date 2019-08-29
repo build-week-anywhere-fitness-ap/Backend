@@ -23,12 +23,14 @@ Quick Links: [Users Overview](#users-overview) | [Classes Overview](#classes-ove
 
 ### Users Overview
 
-| Method | Endpoint         | Requires                                        | Description                                                                                                                           |
-| ------ | ---------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/api/register/` | `firstName`, `lastName`, `username`, `password` | Used for adding a new user (both client and instructor) to the database.                                                              |
-| POST   | `/api/login`     | `username`, `password`                          | Used to log a user in. Returns a token, along with the user's first name, user's last name, and user's status as a client/instructor. |
-| GET    | `/api/users`     | Successful Login                                | Used to show all users in the database.                                                                                               |
-
+| Method | Endpoint          | Requires                                        | Description                                                                                                                           |
+| ------ | ----------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| POST   | `/api/register/`  | `firstName`, `lastName`, `username`, `password` | Used for adding a new user (both client and instructor) to the database.                                                              |
+| POST   | `/api/login/`     | `username`, `password`                          | Used to log a user in. Returns a token, along with the user's first name, user's last name, and user's status as a client/instructor. |
+| GET    | `/api/users/`     | Successful Login                                | Used to show all users in the database.                                                                                               |
+| GET    | `/api/users/:id/` | Successful Login                                | Used to show details of a specific user.                                                                                              |
+| PUT    | `/api/users/:id/` | Successful Login                                | Used to update the information of the user currently logged in.                                                                       |
+| DELETE | `/api/users/:id/` | Successful Login                                | Used to delete the user that is currently logged in.                                                                                  |
 ---
 
 ### User Registration
@@ -476,7 +478,7 @@ Parameters:
 
 ### Update Session
 
-Method used: **[PUT]** `/api/session/:id`
+Method used: **[PUT]** `/api/sessions/:id`
 
 On Success: Returns `1`, or returns `0` if session could not be updated.
 
@@ -493,7 +495,7 @@ Parameters:
 
 ### Delete Session
 
-Method used: **[DELETE]** `/api/session/:id`
+Method used: **[DELETE]** `/api/sessions/:id`
 
 On Success: Returns `1`, or returns `0` if session could not be deleted.
 
